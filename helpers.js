@@ -11,9 +11,16 @@ function logCurrentDirectory(currentDir) {
   console.log(`You are currently in ${currentDir}`);
 }
 
+function saluteUser(username) {
+  console.log(`Welcome to File Manager, ${username}!`);
+}
+
 async function handleStreams(fs, path, source, destination, currentDir) {
-  const fileHandleRead = await fs.open(path.join(currentDir, source), 'r');
-  const fileHandleWrite = await fs.open(path.join(currentDir, destination), 'w');
+  const sourcePath = path.resolve(currentDir, source);
+  const destinationPath = path.resolve(currentDir, destination, path.basename(source));
+
+  const fileHandleRead = await fs.open(sourcePath, 'r');
+  const fileHandleWrite = await fs.open(destinationPath, 'w');
 
   const streamRead = fileHandleRead.createReadStream();
   const streamWrite = fileHandleWrite.createWriteStream();
@@ -30,5 +37,6 @@ export {
   parseArgs,
   logCurrentDirectory,
   handleStreams,
-  exit
+  exit,
+  saluteUser
 }

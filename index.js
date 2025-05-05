@@ -4,12 +4,13 @@ import path from 'node:path';
 import os from 'node:os';
 import crypto from 'node:crypto';
 import zlib from 'node:zlib';
-import { parseArgs, logCurrentDirectory, exit } from './helpers.js';
+import { parseArgs, logCurrentDirectory, exit, saluteUser } from './helpers.js';
 import { handleCommand } from './commands/commandHandler.js';
 
 const username = parseArgs(process.argv).username || 'Anonymous';
-let currentDir = process.cwd();
+let currentDir = os.homedir();
 const rootDir = path.parse(currentDir).root;
+saluteUser(username);
 logCurrentDirectory(currentDir);
 
 const rl = readline.createInterface({
