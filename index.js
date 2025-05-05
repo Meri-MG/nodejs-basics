@@ -1,10 +1,14 @@
 import readline from 'node:readline';
 import fs from 'node:fs/promises';
 import path from 'node:path';
+import os from 'node:os';
+import crypto from 'node:crypto';
+import zlib from 'node:zlib';
 import { parseArgs, logCurrentDirectory,
   goUp, listDir, changeDir,
   logReadableChunks, makeDir, addFile,
-  renameFile, copyFile, deleteFile, moveFile
+  renameFile, copyFile, deleteFile, moveFile, handleOsCommands,
+  calculateHash, compressFile, decompressFile
 } from './helpers.js';
 
 const username = parseArgs(process.argv).username || 'Anonymous';
@@ -74,7 +78,10 @@ rl.on('line', async (line) => {
       case 'rm':
         await deleteFile(fs, args[0]);
         break;
-
+      case 'os':
+        handleOsCommands(os, args[0]);
+        break;
+      
       default:
         console.log('Invalid input');
     }
