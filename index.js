@@ -4,11 +4,13 @@ import path from 'node:path';
 import os from 'node:os';
 import crypto from 'node:crypto';
 import zlib from 'node:zlib';
+import { compressFile, decompressFile } from './commands/brotl.js';
+import { handleOsCommands } from './commands/osInfo.js';
+import { calculateHash } from './commands/calculateHash.js';
+import {addFile, renameFile, copyFile, deleteFile, moveFile} from './commands/fileCommands.js';
 import { parseArgs, logCurrentDirectory,
   goUp, listDir, changeDir,
-  logReadableChunks, makeDir, addFile,
-  renameFile, copyFile, deleteFile, moveFile, handleOsCommands,
-  calculateHash, compressFile, decompressFile
+  logReadableChunks, makeDir
 } from './helpers.js';
 
 const username = parseArgs(process.argv).username || 'Anonymous';

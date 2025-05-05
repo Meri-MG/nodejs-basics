@@ -50,104 +50,14 @@ async function makeDir(fs, path, dirName, currentDir) {
   await fs.mkdir(newDirPath);
 }
 
-async function addFile(fs, path, fileName, currentDir) {
-  const filePath = path.join(currentDir, fileName);
-
-  await fs.writeFile(filePath, '');
-}
-
-async function renameFile(fs, path, oldName, newName, currentDir) {
-  const oldPath = path.join(currentDir, oldName);
-  const newPath = path.join(currentDir, newName);
-
-  await fs.rename(oldPath, newPath);
-}
-
-async function copyFile(fs, path, source, destination, currentDir) {
+async function handleStreams(fs, path, source, destination, currentDir) {
   const fileHandleRead = await fs.open(path.join(currentDir, source), 'r');
   const fileHandleWrite = await fs.open(path.join(currentDir, destination), 'w');
 
   const streamRead = fileHandleRead.createReadStream();
   const streamWrite = fileHandleWrite.createWriteStream();
-  streamRead.pipe(streamWrite);
-}
 
-async function moveFile(fs, path, source, destination, currentDir) {
-  await copyFile(fs, path, source, destination, currentDir) 
-  await deleteFile(fs, source)
-}
-
-async function deleteFile(fs, source) {
-  await fs.unlink(source)
-}
-
-function handleOsCommands(os, arg) {
-  if (arg === '--EOL') {
-    const eol = JSON.stringify(os.EOL); 
-    console.log(eol);
-  } else if (arg === '--cpus') {
-    const cpus = os.cpus();
-    console.log(`Overall CPUs: ${cpus.length}`);
-
-    cpus.forEach((cpu, index) => {
-      const { model, speed } = cpu;
-      console.log(`CPU ${index + 1}: ${model}, ${speed / 1000} GHz`);
-    });
-  } else if (arg === '--homedir') {
-    const homeDir = os.homedir();
-    console.log(homeDir);
-  } else if (arg === '--username') {
-    const userInfo = os.userInfo();
-    console.log(userInfo.username);
-  } else if (arg === '--architecture') {
-    const architecture = os.arch();
-    console.log(architecture);
-  } else {
-    console.log('Invalid argument');
-  }
-}
-
-async function calculateHash(fs, crypto, filePath) {
-  const fileHandleRead = await fs.open(filePath, 'r');
-  const input = fileHandleRead.createReadStream()
-
-  const hash = crypto.createHash('sha256');
-  input.on('readable', () => {
-    const data = input.read();
-    if (data)
-      hash.update(data);
-    else {
-      console.log(`hash ${hash.digest('hex')} from ${filePath}`);
-    }
-  })
-}
-
-async function compressFile(fs, path, zlib, source, destination, currentDir) {
-  const fileHandleRead = await fs.open(path.join(currentDir, source), 'r');
-  const fileHandleWrite = await fs.open(path.join(currentDir, destination), 'w');
-
-  const streamRead = fileHandleRead.createReadStream();
-  const streamWrite = fileHandleWrite.createWriteStream();
-  const brotli = zlib.createBrotliCompress();
-  const stream = streamRead.pipe(brotli).pipe(streamWrite);
-
-  stream.on('finish', () => {
-    console.log('Done compressing');
-  });
-}
-
-async function decompressFile(fs, path, zlib, source, destination, currentDir) {
-  const fileHandleRead = await fs.open(path.join(currentDir, source), 'r');
-  const fileHandleWrite = await fs.open(path.join(currentDir, destination), 'w');
-
-  const streamRead = fileHandleRead.createReadStream();
-  const streamWrite = fileHandleWrite.createWriteStream();
-  const brotli = zlib.createBrotliDecompress();
-  const stream = streamRead.pipe(brotli).pipe(streamWrite);
-
-  stream.on('finish', () => {
-    console.log('Done decompressing');
-  });
+  return { streamRead, streamWrite };
 }
 
 export {
@@ -158,13 +68,5 @@ export {
   listDir,
   logReadableChunks,
   makeDir,
-  addFile,
-  renameFile,
-  copyFile,
-  deleteFile,
-  moveFile,
-  handleOsCommands,
-  calculateHash,
-  compressFile,
-  decompressFile
+  handleStreams
 }
