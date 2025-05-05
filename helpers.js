@@ -52,8 +52,33 @@ async function makeDir(fs, path, dirName, currentDir) {
 
 async function addFile(fs, path, fileName, currentDir) {
   const filePath = path.join(currentDir, fileName);
-  console.log('Write data to file:', filePath);
+
   await fs.writeFile(filePath, '');
+}
+
+async function renameFile(fs, path, oldName, newName, currentDir) {
+  const oldPath = path.join(currentDir, oldName);
+  const newPath = path.join(currentDir, newName);
+
+  await fs.rename(oldPath, newPath);
+}
+
+async function copyFile(fs, path, source, destination, currentDir) {
+  const fileHandleRead = await fs.open(path.join(currentDir, source), 'r');
+  const fileHandleWrite = await fs.open(path.join(currentDir, destination), 'w');
+
+  const streamRead = fileHandleRead.createReadStream();
+  const streamWrite = fileHandleWrite.createWriteStream();
+  streamRead.pipe(streamWrite);
+}
+
+async function moveFile(fs, path, source, destination, currentDir) {
+  await copyFile(fs, path, source, destination, currentDir) 
+  await deleteFile(fs, source)
+}
+
+async function deleteFile(fs, source) {
+  await fs.unlink(source)
 }
 
 export {
@@ -64,5 +89,9 @@ export {
   listDir,
   logReadableChunks,
   makeDir,
-  addFile
+  addFile,
+  renameFile,
+  copyFile,
+  deleteFile,
+  moveFile
 }

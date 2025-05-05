@@ -1,7 +1,11 @@
 import readline from 'node:readline';
 import fs from 'node:fs/promises';
 import path from 'node:path';
-import { parseArgs, logCurrentDirectory, goUp, listDir, changeDir, logReadableChunks, makeDir, addFile } from './helpers.js';
+import { parseArgs, logCurrentDirectory,
+  goUp, listDir, changeDir,
+  logReadableChunks, makeDir, addFile,
+  renameFile, copyFile, deleteFile, moveFile
+} from './helpers.js';
 
 const username = parseArgs(process.argv).username || 'Anonymous';
 let currentDir = process.cwd();
@@ -53,6 +57,22 @@ rl.on('line', async (line) => {
 
       case 'add':
         await addFile(fs, path, args[0], currentDir);
+        break;
+
+      case 'rn':
+        await renameFile(fs, path, args[0], args[1], currentDir);
+        break;
+      
+      case 'cp':
+        await copyFile(fs, path, args[0], args[1], currentDir);
+        break;
+      
+      case 'mv':
+        await moveFile(fs, path, args[0], args[1], currentDir);
+        break;
+
+      case 'rm':
+        await deleteFile(fs, args[0]);
         break;
 
       default:
