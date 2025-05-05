@@ -30,9 +30,7 @@ function changeDir(fs, path, inputPath, currentDir) {
   }
 }
 
-async function listDir(currentDir) {
-  const fs = await import('node:fs/promises');
-  const entries = await fs.readdir(currentDir, { withFileTypes: true });
+async function listDir(entries) {
   const result = entries.map(entry => ({
     Name: entry.name,
     Type: entry.isDirectory() ? 'directory' : 'file'
@@ -41,10 +39,30 @@ async function listDir(currentDir) {
   console.table(result);
 }
 
+async function logReadableChunks(readable) {
+  for await (const chunk of readable) {
+    console.log(chunk);
+  }
+}
+
+async function makeDir(fs, path, dirName, currentDir) {
+  const newDirPath = path.join(currentDir, dirName);
+  await fs.mkdir(newDirPath);
+}
+
+async function addFile(fs, path, fileName, currentDir) {
+  const filePath = path.join(currentDir, fileName);
+  console.log('Write data to file:', filePath);
+  await fs.writeFile(filePath, '');
+}
+
 export {
   parseArgs,
   logCurrentDirectory,
   goUp,
   changeDir,
-  listDir
+  listDir,
+  logReadableChunks,
+  makeDir,
+  addFile
 }

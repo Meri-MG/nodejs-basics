@@ -1,7 +1,7 @@
 import readline from 'node:readline';
-import fs from 'node:fs';
+import fs from 'node:fs/promises';
 import path from 'node:path';
-import { parseArgs, logCurrentDirectory, goUp, listDir, changeDir } from './helpers.js';
+import { parseArgs, logCurrentDirectory, goUp, listDir, changeDir, logReadableChunks, makeDir, addFile } from './helpers.js';
 
 const username = parseArgs(process.argv).username || 'Anonymous';
 let currentDir = process.cwd();
@@ -37,7 +37,22 @@ rl.on('line', async (line) => {
         break;
 
       case 'ls':
-        await listDir(currentDir);
+        const entries = await fs.readdir(currentDir, { withFileTypes: true });
+        await listDir(entries);
+        break;
+      
+      case 'cat':
+        const readable = fs.createReadStream(
+          args[0], {encoding: 'utf8'});
+        logReadableChunks(readable);
+        break;
+
+      case 'mkdir':
+        await makeDir(fs, path, args[0], currentDir);
+        break;
+
+      case 'add':
+        await addFile(fs, path, args[0], currentDir);
         break;
 
       default:
