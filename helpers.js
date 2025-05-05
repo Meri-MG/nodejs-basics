@@ -6,3 +6,7 @@ export function parseArgs(argv) {
   });
   return args;
 }
+
+export function logCurrentDirectory() {
+  console.log(`You are currently in ${process.cwd()}`);
+}

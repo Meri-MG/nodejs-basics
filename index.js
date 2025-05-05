@@ -1,8 +1,9 @@
 import readline from 'node:readline';
-import { parseArgs } from './helpers.js';
+import { parseArgs, logCurrentDirectory } from './helpers.js';
 
 const username = parseArgs(process.argv).username || 'Anonymous';
 console.log(`Welcome to the File Manager, ${username}!`);
+logCurrentDirectory();
 
 const rl = readline.createInterface({
   input: process.stdin,
