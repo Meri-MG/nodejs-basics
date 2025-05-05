@@ -78,10 +78,15 @@ rl.on('line', async (line) => {
       case 'rm':
         await deleteFile(fs, args[0]);
         break;
-      case 'os':
+
+        case 'os':
         handleOsCommands(os, args[0]);
         break;
-      
+
+        case 'hash':
+          await calculateHash(fs, crypto, args[0]);
+          break;
+
       default:
         console.log('Invalid input');
     }
