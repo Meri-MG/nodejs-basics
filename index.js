@@ -4,14 +4,8 @@ import path from 'node:path';
 import os from 'node:os';
 import crypto from 'node:crypto';
 import zlib from 'node:zlib';
-import { compressFile, decompressFile } from './commands/brotl.js';
-import { handleOsCommands } from './commands/osInfo.js';
-import { calculateHash } from './commands/calculateHash.js';
-import {addFile, renameFile, copyFile, deleteFile, moveFile} from './commands/fileCommands.js';
-import { parseArgs, logCurrentDirectory,
-  goUp, listDir, changeDir,
-  logReadableChunks, makeDir
-} from './helpers.js';
+import { parseArgs, logCurrentDirectory, exit } from './helpers.js';
+import { handleCommand } from './commands/commandHandler.js';
 
 const username = parseArgs(process.argv).username || 'Anonymous';
 let currentDir = process.cwd();
@@ -30,75 +24,19 @@ rl.on('line', async (line) => {
   const input = line.trim();
 
   if (input === '.exit') {
-    console.log(`Thank you for using File Manager, ${username}, goodbye!`);
-    process.exit(0);
+    exit(username);
   }
 
   try {
-    const [command, ...args] = input.split(' ');
+    const currentDirRef = { value: currentDir };
 
-    switch (command) {
-      case 'up':
-        currentDir = goUp(path, currentDir, rootDir)
-        break;
+    await handleCommand(input, {
+      fs, path, os, crypto, zlib,
+      currentDirRef,
+      rootDir
+    });
 
-      case 'cd':
-        currentDir = changeDir(fs, path, args[0], currentDir);
-        break;
-
-      case 'ls':
-        const entries = await fs.readdir(currentDir, { withFileTypes: true });
-        await listDir(entries);
-        break;
-      
-      case 'cat':
-        const readable = fs.createReadStream(
-          args[0], {encoding: 'utf8'});
-        logReadableChunks(readable);
-        break;
-
-      case 'mkdir':
-        await makeDir(fs, path, args[0], currentDir);
-        break;
-
-      case 'add':
-        await addFile(fs, path, args[0], currentDir);
-        break;
-
-      case 'rn':
-        await renameFile(fs, path, args[0], args[1], currentDir);
-        break;
-      
-      case 'cp':
-        await copyFile(fs, path, args[0], args[1], currentDir);
-        break;
-      
-      case 'mv':
-        await moveFile(fs, path, args[0], args[1], currentDir);
-        break;
-
-      case 'rm':
-        await deleteFile(fs, args[0]);
-        break;
-
-      case 'os':
-        handleOsCommands(os, args[0]);
-        break;
-
-      case 'hash':
-        await calculateHash(fs, crypto, args[0]);
-        break;
-
-      case 'compress':
-        await compressFile(fs, path, zlib, args[0], args[1], currentDir);
-        break;
-      case 'decompress':
-        await decompressFile(fs, path, zlib, args[0], args[1], currentDir);
-        break;
-
-      default:
-        console.log('Invalid input');
-    }
+    currentDir = currentDirRef.value;
   } catch (err) {
     console.log('Operation failed');
   }
@@ -109,6 +47,5 @@ rl.on('line', async (line) => {
 
 process.stdin.resume();
 rl.on('SIGINT', () => {
-  console.log(`\nThank you for using File Manager, ${username}, goodbye!`);
-  process.exit(0);
+  exit(username);
 });

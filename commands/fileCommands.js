@@ -6,6 +6,14 @@ async function addFile(fs, path, fileName, currentDir) {
   await fs.writeFile(filePath, '');
 }
 
+async function readFile(fs, path, source, currentDir) {
+  const fileHandleRead = await fs.open(path.join(currentDir, source), 'r');
+  const readable = await fileHandleRead.createReadStream({ encoding: 'utf8' });
+  for await (const chunk of readable) {
+    console.log(chunk);
+  }
+}
+
 async function renameFile(fs, path, oldName, newName, currentDir) {
   const oldPath = path.join(currentDir, oldName);
   const newPath = path.join(currentDir, newName);
@@ -31,6 +39,7 @@ async function deleteFile(fs, source) {
 
 export {
   addFile,
+  readFile,
   renameFile,
   copyFile,
   deleteFile,
