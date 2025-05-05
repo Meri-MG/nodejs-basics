@@ -122,6 +122,34 @@ async function calculateHash(fs, crypto, filePath) {
   })
 }
 
+async function compressFile(fs, path, zlib, source, destination, currentDir) {
+  const fileHandleRead = await fs.open(path.join(currentDir, source), 'r');
+  const fileHandleWrite = await fs.open(path.join(currentDir, destination), 'w');
+
+  const streamRead = fileHandleRead.createReadStream();
+  const streamWrite = fileHandleWrite.createWriteStream();
+  const brotli = zlib.createBrotliCompress();
+  const stream = streamRead.pipe(brotli).pipe(streamWrite);
+
+  stream.on('finish', () => {
+    console.log('Done compressing');
+  });
+}
+
+async function decompressFile(fs, path, zlib, source, destination, currentDir) {
+  const fileHandleRead = await fs.open(path.join(currentDir, source), 'r');
+  const fileHandleWrite = await fs.open(path.join(currentDir, destination), 'w');
+
+  const streamRead = fileHandleRead.createReadStream();
+  const streamWrite = fileHandleWrite.createWriteStream();
+  const brotli = zlib.createBrotliDecompress();
+  const stream = streamRead.pipe(brotli).pipe(streamWrite);
+
+  stream.on('finish', () => {
+    console.log('Done decompressing');
+  });
+}
+
 export {
   parseArgs,
   logCurrentDirectory,

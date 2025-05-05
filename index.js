@@ -79,13 +79,20 @@ rl.on('line', async (line) => {
         await deleteFile(fs, args[0]);
         break;
 
-        case 'os':
+      case 'os':
         handleOsCommands(os, args[0]);
         break;
 
-        case 'hash':
-          await calculateHash(fs, crypto, args[0]);
-          break;
+      case 'hash':
+        await calculateHash(fs, crypto, args[0]);
+        break;
+
+      case 'compress':
+        await compressFile(fs, path, zlib, args[0], args[1], currentDir);
+        break;
+      case 'decompress':
+        await decompressFile(fs, path, zlib, args[0], args[1], currentDir);
+        break;
 
       default:
         console.log('Invalid input');
