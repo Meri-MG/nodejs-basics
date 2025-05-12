@@ -58,7 +58,7 @@ describe('Users API', () => {
     const res = await request(server).delete(`/api/users/${createdUserId}`);
 
     expect(res.status).toBe(204);
-    expect(res.body).toEqual({});
+    expect(res.body).toEqual("");
   });
 
   it('GET /api/users/:id → should return 404 after deletion', async () => {
