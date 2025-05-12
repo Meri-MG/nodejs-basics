@@ -1,0 +1,29 @@
+{
+  "name": "nodejs-basics",
+  "version": "1.0.0",
+  "description": "crud api",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start:dev": "nodemon index.js",
+    "start": "node index.js",
+    "start:prod": "node dist/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Meri-MG/nodejs-basics.git"
+  },
+  "author": "meri gogichashvili",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Meri-MG/nodejs-basics/issues"
+  },
+  "homepage": "https://github.com/Meri-MG/nodejs-basics#readme",
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  },
+  "dependencies": {
+    "dotenv": "^16.5.0"
+  }
+}
