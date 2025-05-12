@@ -1,4 +1,3 @@
-import writeToFile from "../utils/write-to-file.js";
 import { version as isValidUUID } from 'uuid';
 
 export default (req, res) => {
@@ -23,7 +22,6 @@ export default (req, res) => {
   }
 
   users.splice(users.indexOf(foundUser), 1);
-  writeToFile(users);
   res.writeHead(204, { 'Content-Type': 'application/json' });
   res.end(JSON.stringify(foundUser));
 }

@@ -1,6 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
 import requestBodyparser from "../utils/body-parser.js";
-import writeToFile from "../utils/write-to-file.js";
 
 export default async (req, res) => {
   if (req.url === "/api/users") {
@@ -17,9 +16,8 @@ export default async (req, res) => {
       }
       body.id = uuidv4();
       req.users.push(body);
-      writeToFile(req.users);
       res.writeHead(201, { "Content-Type": "application/json" });
-      res.end();
+      res.end(JSON.stringify(body));
     } catch (err) {
       console.log(err);
       res.writeHead(400, { "Content-Type": "application/json" });

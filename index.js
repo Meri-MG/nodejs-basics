@@ -4,13 +4,14 @@ import getReq from './routes/get.js'
 import postReq from './routes/post.js'
 import putReq from './routes/put.js'
 import deleteReq from './routes/delete.js'
-import users from './data/users.json' with {type: "json"};
+import users from './db.js';
 dotenv.config()
 
 const PORT = process.env.PORT || 3001;
 
 const server = createServer((req, res) => {
-  req.users = users;
+  req.users = users
+
   switch (req.method) {
     case "GET":
       getReq(req, res);
@@ -34,7 +35,11 @@ const server = createServer((req, res) => {
   }
 })
 
-server.listen(PORT, () => {
-  console.log(`Server running at http://localhost:${PORT}/`);
-}
+if (process.env.NODE_ENV !== 'test') {
+  server.listen(PORT, () => {
+    console.log(`Server running at http://localhost:${PORT}/`);
+  }
 )
+}
+
+export default server;

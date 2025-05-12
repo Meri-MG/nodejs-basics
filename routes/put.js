@@ -1,5 +1,4 @@
 import requestBodyparser from "../utils/body-parser.js";
-import writeToFile from "../utils/write-to-file.js";
 import { validate as isValidUUID } from 'uuid';
 
 export default async (req, res) => {
@@ -38,7 +37,6 @@ export default async (req, res) => {
       }
 
       users[index] = { id, ...body };
-      writeToFile(users);
 
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify(users[index]));
