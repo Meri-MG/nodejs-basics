@@ -1,4 +1,4 @@
-import { version as uuidVersion } from 'uuid';
+import { version as isValidUUID } from 'uuid';
 export default (req, res) => {
    const parsedUrl = new URL(req.url, `http://${req.headers.host}`);
   const pathname = parsedUrl.pathname;
@@ -12,7 +12,7 @@ export default (req, res) => {
     return;
   }
 
-  if (pathname === '/api/users/' && !uuidVersion(id)) {
+  if (pathname === '/api/users/' && !isValidUUID(id)) {
     res.writeHead(400, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify({ message: 'Invalid user ID format (UUID expected)' }));
     return;
