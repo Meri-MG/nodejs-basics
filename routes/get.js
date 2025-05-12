@@ -1,3 +1,4 @@
+import { version as uuidVersion } from 'uuid';
 export default (req, res) => {
    const parsedUrl = new URL(req.url, `http://${req.headers.host}`);
   const pathname = parsedUrl.pathname;
@@ -5,15 +6,13 @@ export default (req, res) => {
   const id = parts[3];
   const users = req.users
 
-  const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-
   if (pathname === '/api/users') {
     res.writeHead(200, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify(users));
     return;
   }
 
-  if (pathname === '/api/users/' && !uuidRegex.test(id)) {
+  if (pathname === '/api/users/' && !uuidVersion(id)) {
     res.writeHead(400, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify({ message: 'Invalid user ID format (UUID expected)' }));
     return;

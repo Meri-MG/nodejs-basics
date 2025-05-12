@@ -1,4 +1,4 @@
-import crypto from "crypto";
+import { v4 as uuidv4 } from 'uuid';
 import requestBodyparser from "../utils/body-parser.js";
 import writeToFile from "../utils/write-to-file.js";
 
@@ -15,7 +15,7 @@ export default async (req, res) => {
       if (!isValid) {
         throw new Error("Invalid or missing fields");
       }
-      body.id = crypto.randomUUID();
+      body.id = uuidv4();
       req.users.push(body);
       writeToFile(req.users);
       res.writeHead(201, { "Content-Type": "application/json" });
