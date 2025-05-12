@@ -1,5 +1,5 @@
 import request from 'supertest';
-import server from '../index.js';
+import server from '../src/index.js';
 
 process.env.PORT = 3001
 
