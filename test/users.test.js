@@ -1,7 +1,7 @@
 import request from 'supertest';
 import server from '../src/index.js';
 
-process.env.PORT = 3001
+process.env.PORT = 4001
 
 describe('Users API', () => {
   let createdUserId;

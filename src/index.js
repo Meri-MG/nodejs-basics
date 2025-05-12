@@ -7,7 +7,7 @@ import deleteReq from '../routes/delete.js'
 import users from '../db.js';
 dotenv.config()
 
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 4001;
 
 const server = createServer((req, res) => {
   req.users = users

@@ -49,6 +49,13 @@ This is a simple RESTful API built with Node.js that allows you to manage users 
   npm start:prod
   ```
 
+  or
+
+  ```
+    npm start:multi
+  ```
+  which allows to run distributed requests across multiple instances listening on port 4000
+
 4. 📋 API Endpoints
 
 ## 🔹 Create User
